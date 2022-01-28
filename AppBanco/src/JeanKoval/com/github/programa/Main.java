@@ -8,6 +8,7 @@ import java.util.Scanner;
 import JeanKoval.com.github.arquivos.Clientes;
 import JeanKoval.com.github.arquivos.Contas;
 import JeanKoval.com.github.arquivos.Enderecos;
+import JeanKoval.com.github.classes.Banco;
 import JeanKoval.com.github.classes.Cliente;
 import JeanKoval.com.github.classes.ContaCorrente;
 import JeanKoval.com.github.classes.ContaPoupanca;
@@ -16,7 +17,7 @@ import JeanKoval.com.github.memoria.Memoria;
 
 public class Main {
 	
-	public static Scanner sc = new Scanner(System.in);
+	public static Scanner sc 	   = new Scanner(System.in);
 	public static DecimalFormat df = new DecimalFormat("0.00");
 
 	public static void main(String[] args) throws IOException {
@@ -26,7 +27,7 @@ public class Main {
 		System.out.println("		BEM VINDO AO SEU APP DO BANCO DIGITAL		\n");
 		
 		do {
-			System.out.println("Opções disponíveis:\n");
+			System.out.println("Opï¿½ï¿½es disponï¿½veis:\n");
 			System.out.println("  1 - Entrar em minha Conta;");
 			System.out.println("  2 - Criar uma Conta;");
 			System.out.println("  0 - Encerrar o programa;");
@@ -34,7 +35,7 @@ public class Main {
 			escolha = sc.nextInt();
 			
 			if(escolha>2)  
-				System.out.println("\n\nNão temos esta opção no momento, tente novamente!\n\n");
+				System.out.println("\n\nNï¿½o temos esta opï¿½ï¿½o no momento, tente novamente!\n\n");
 			else if(escolha==1)
 				login();
 			else if(escolha==2)
@@ -48,41 +49,38 @@ public class Main {
 	public static void acoesAreaLogada() throws IOException {
 		Integer escolha = 0;
 		do {
-			System.out.println("Temos as seguintes opções para sua conta:\n");
+			System.out.println("Temos as seguintes opï¿½ï¿½es para sua conta:\n");
 			System.out.println("  1 - Saque;");
-			System.out.println("  2 - Depósito;");
-			System.out.println("  3 - Tranferência;");
+			System.out.println("  2 - Depï¿½sito;");
+			System.out.println("  3 - Tranferï¿½ncia;");
 			System.out.println("  0 - Sair da Conta;");
 			System.out.print("\nDigite a sua escolha: ");
 			escolha = sc.nextInt();
 			
-			//atualiza as informações da conta, para atualizar o saldo
-			if(Memoria.tipoContaAtual.equals("C")) {
-				Memoria.setContaLogada(Memoria.contaCAtual.getId(), Memoria.contaCAtual.getCliente().getId(), "C", false);
-			}else {
-				Memoria.setContaLogada(Memoria.contaPAtual.getId(), Memoria.contaPAtual.getCliente().getId(), "P", false);
-			}
+			//atualiza as informaï¿½ï¿½es da conta, para atualizar o saldo
+			Memoria.setContaLogada(Memoria.contaAtual.getId(), Memoria.contaAtual.getCliente().getId(), Memoria.contaAtual.getTipoConta(), false);
+
 			switch(escolha) {
 				case 0: break;
 				case 1: saque(); break;
 				case 2: deposito(); break;
 				case 3: transferencia(); break;
 				default:
-					System.out.println("\nNão temos essa opção no momento, tente novamente!\n");					
+					System.out.println("\nNï¿½o temos essa opï¿½ï¿½o no momento, tente novamente!\n");					
 			}
 		}while(escolha!=0);
 		pularLinha();
 	}
 	
 	public static void saque() throws IOException {
-		Double saldoAutal = (Memoria.tipoContaAtual.equals("C") ? Memoria.contaCAtual.getSaldo() : Memoria.contaPAtual.getSaldo());
-		Integer idConta   = (Memoria.tipoContaAtual.equals("C") ? Memoria.contaCAtual.getId() : Memoria.contaPAtual.getId());
+		Double saldoAutal = Memoria.contaAtual.getSaldo();
+		
 		if(saldoAutal==0) {
-			System.out.println("\nSeu saldo está zerado, faça uma depósito para obter saldo!\n");
+			System.out.println("\nSeu saldo estï¿½ zerado, faï¿½a uma depï¿½sito para obter saldo!\n");
 			return;
 		}
 		
-		System.out.println("\nSeu saldo atual é de " + df.format(saldoAutal));
+		System.out.println("\nSeu saldo atual ï¿½ de " + df.format(saldoAutal));
 		System.out.print("\nDigite o valor que deseja sacar: ");
 		Double valorSaque = sc.nextDouble();
 		
@@ -91,43 +89,42 @@ public class Main {
 			return;
 		}
 		
-		Contas.execSaque(idConta, valorSaque, "saque");
+		Contas.execSaque(Memoria.contaAtual.getId(), valorSaque, "saque");
 		
 		System.out.println("\nSaque efetuado com Sucesso!\n");
 	}
 	
 	public static void deposito() throws IOException {
-		Integer idConta   = (Memoria.tipoContaAtual.equals("C") ? Memoria.contaCAtual.getId()    : Memoria.contaPAtual.getId());
-		
 		System.out.print("\nDigite o valor que deseja depositar: ");
 		Double valorDeposito = sc.nextDouble();
 		
-		Contas.execSaque(idConta, valorDeposito, "deposito");
+		Contas.execSaque(Memoria.contaAtual.getId(), valorDeposito, "deposito");
 		
 		System.out.println("\nDeposito efetuado com Sucesso!\n");
 	}
 	
 	public static void transferencia() throws IOException {
-		Double saldoAutal = (Memoria.tipoContaAtual.equals("C") ? Memoria.contaCAtual.getSaldo() : Memoria.contaPAtual.getSaldo());
-		Integer idConta   = (Memoria.tipoContaAtual.equals("C") ? Memoria.contaCAtual.getId() : Memoria.contaPAtual.getId());
+		Double saldoAutal = Memoria.contaAtual.getSaldo();
+		
 		if(saldoAutal==0) {
-			System.out.println("\nSeu saldo está zerado, faça uma depósito para obter saldo!\n");
+			System.out.println("\nSeu saldo estï¿½ zerado, faï¿½a uma depï¿½sito para obter saldo!\n");
 			return;
 		}
 		
-		System.out.println("\nSeu saldo atual é de " + df.format(saldoAutal));
+		System.out.println("\nSeu saldo atual ï¿½ de " + df.format(saldoAutal));
 		
 		System.out.println("\nExemplo: (0001-1)");
 		System.out.print("Digite a conta para qual quer tranferir: ");
 		String contaDestino = sc.next();
-		Integer idDestino = Contas.getIdByConta(contaDestino);
+		Integer idDestino   = Contas.getIdByConta(contaDestino);
 		
-		if(idConta==idDestino) {
-			System.out.println("\nEsta conta digitada é a sua, escolha outra conta para Transferencia!\n");
+		if(Memoria.contaAtual.getId()==idDestino) {
+			System.out.println("\nEsta conta digitada ï¿½ a sua, escolha outra conta para Transferencia!\n");
+			return;
 		}
 		
 		if(idDestino == null) {
-			System.out.println("\nNúmero de Conta não encontrada, tente novamente!\n");
+			System.out.println("\nNï¿½mero de Conta nï¿½o encontrada, tente novamente!\n");
 			return;
 		}
 		
@@ -139,26 +136,25 @@ public class Main {
 			return;
 		}
 		
-		Contas.execTranferencia(idConta, idDestino, valorTrans);
-		
+		Contas.execTranferencia(Memoria.contaAtual.getId(), idDestino, valorTrans);
 		
 		System.out.println("\nTranferencia efetuada com Sucesso!\n");
 	}
 	
 	public static void login() throws IOException {
-		System.out.println("\nPARA CONECTAR EM SUA CONTA PRECISAMOS DAS SEGUINTES INFORMAÇÕES: ");
+		System.out.println("\nPARA CONECTAR EM SUA CONTA PRECISAMOS DAS SEGUINTES INFORMAï¿½ï¿½ES: ");
 		System.out.print("\nDigite seu CPF: ");
 		String cpf = sc.next();
 		
 		if(Clientes.validaCPFDuplicado(cpf)) {
-			System.out.println("\nCPF não encontrado na base de dados!\n");
+			System.out.println("\nCPF nï¿½o encontrado na base de dados!\n");
 			return;
 		}
 		
 		System.out.println("Exemplo: (0001-1)");
-		System.out.print("Digite o número da sua conta com o digito: ");
+		System.out.print("Digite o nï¿½mero da sua conta com o digito: ");
 		String conta = sc.next();
-		System.out.println("C - Conta Corrente | P - Conta Poupança");
+		System.out.println("C - Conta Corrente | P - Conta Poupanï¿½a");
 		System.out.print("Digite o tipo da sua Conta: ");
 		String tipoConta = sc.next();
 		if(!(tipoConta!="C" || tipoConta!="P")) {
@@ -167,12 +163,12 @@ public class Main {
 		}
 		Integer idConta = Contas.getIdClienteByContaAndType(conta, tipoConta); 
 		if(idConta==-1) {
-			System.out.println("\nNão encontramos a conta informada, tente novamente!\n");
+			System.out.println("\nNï¿½o encontramos a conta informada, tente novamente!\n");
 			return;
 		}
 		Integer idCliente = Clientes.getIdByCPF(cpf);
 		if(idConta!=idCliente) {
-			System.out.println("\nA conta informada não está cadastrada no CPF informado, tente novamente!\n");
+			System.out.println("\nA conta informada nï¿½o estï¿½ cadastrada no CPF informado, tente novamente!\n");
 			return;
 		}
 		
@@ -183,7 +179,7 @@ public class Main {
 	public static void criarConta() throws IOException {
 		pularLinha();
 		System.out.println("---------------------------------------------------");
-		System.out.println("----------------- Criação de Conta ----------------");
+		System.out.println("----------------- Criaï¿½ï¿½o de Conta ----------------");
 		System.out.println("---------------------------------------------------");
 		pularLinha();
 		
@@ -192,7 +188,7 @@ public class Main {
 		
 		pularLinha();
 		System.out.println("---------------------------------------------------");
-		System.out.println("------- Informações Pessoais da Nova Conta: -------");
+		System.out.println("------- Informaï¿½ï¿½es Pessoais da Nova Conta: -------");
 		System.out.println("---------------------------------------------------");
 		pularLinha();
 		
@@ -211,7 +207,7 @@ public class Main {
 		
 		pularLinha();
 		System.out.println("---------------------------------------------------");
-		System.out.println("----- Informações de Endereço da Nova Conta: ------");
+		System.out.println("----- Informaï¿½ï¿½es de Endereï¿½o da Nova Conta: ------");
 		System.out.println("---------------------------------------------------");
 		pularLinha();
 		
@@ -226,25 +222,25 @@ public class Main {
 		
 		Endereco ende 	 = new Endereco(Enderecos.getNewId() , rua, numero, cidade, estado);
 		Enderecos.writeEndereco(ende);
+
 		Cliente  cliente = new Cliente(Clientes.getNewId(), nome, sobrenome, cpf, telefone, email, ende);
 		Clientes.writeCliente(cliente);
-		if(escolha==1) {
-			ContaCorrente conta = new ContaCorrente(Contas.getNewId(), 0.00d, Contas.getNewConta(), cliente);
-			Contas.writeConta(conta);
-			Memoria.contaCAtual = conta;
-			Memoria.tipoContaAtual = "C";
-			pularLinha();
-			System.out.println("!!! CONTA CRIDA COM SUCESSO !!!");
-			System.out.println("!!! Agencia: "+conta.getAgencia()+" Conta: "+conta.getConta()+" !!!\n");
-		}else {
-			ContaPoupanca conta = new ContaPoupanca(Contas.getNewId(), 0.00d, Contas.getNewConta(), cliente);
-			Contas.writeConta(conta);
-			Memoria.contaPAtual = conta;
-			Memoria.tipoContaAtual = "P";
-			pularLinha();
-			System.out.println("!!! CONTA CRIDA COM SUCESSO !!!");
-			System.out.println("!!! Agencia: "+conta.getAgencia()+" Conta: "+conta.getConta()+" !!!");
-		}
+		
+		Banco conta = ( escolha==1 ? new ContaCorrente() : new ContaPoupanca() );
+		conta.setId(Contas.getNewId());
+		conta.setAgencia("001");
+		conta.setConta(Contas.getNewConta());
+		conta.setSaldo(0.00d);
+		conta.setTipoConta( (escolha==1 ? "C" : "P") );
+		conta.setCliente(cliente);
+		Contas.writeConta(conta);
+		
+		pularLinha();
+		System.out.println("!!! CONTA CRIDA COM SUCESSO !!!");
+		System.out.println("!!! Agencia: "+conta.getAgencia()+" Conta: "+conta.getConta()+" !!!\n");
+		
+		Memoria.contaAtual 	   = conta;
+		Memoria.tipoContaAtual = conta.getTipoConta();
 		Memoria.msgBemVindo();
 		acoesAreaLogada();
 	}
@@ -253,16 +249,16 @@ public class Main {
 		Integer escolha=0;
 		
 		do {
-			System.out.println("Opções de Contas Disponivéis:\n");
+			System.out.println("Opï¿½ï¿½es de Contas Disponivï¿½is:\n");
 			System.out.println("  1 - Conta Corrente;");
-			System.out.println("  2 - Conta Poupança;");
+			System.out.println("  2 - Conta Poupanï¿½a;");
 			System.out.print("\nQual sua escolha: ");
 			escolha = sc.nextInt();
 			
 			if(escolha!=1 && escolha!=2) {
 				pularLinha();
 				System.out.println("---------------------------------------------------");
-				System.out.println("Não temos a opção digitada, tescolha uma de nossas opções!");
+				System.out.println("Nï¿½o temos a opï¿½ï¿½o digitada, tescolha uma de nossas opï¿½ï¿½es!");
 				pularLinha();
 			}
 		}while(escolha!=1 && escolha!=2);
@@ -282,7 +278,7 @@ public class Main {
 		if(!Clientes.validaCPFDuplicado(cpf)) {
 			do{
 				pularLinha();
-				System.out.println("CPF já cadastrado na base de dados!!");
+				System.out.println("CPF jï¿½ cadastrado na base de dados!!");
 				pularLinha();
 				System.out.print("Digite o CPF novamente: ");
 				cpf = sc.next();

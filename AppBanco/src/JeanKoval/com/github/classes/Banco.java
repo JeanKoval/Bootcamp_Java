@@ -7,16 +7,7 @@ abstract public class Banco {
 	protected String conta;
 	protected String  tipoConta;
 	protected Cliente cliente;
-
-	public Banco(Integer id, Double saldo, String conta, String tipoConta, Cliente cliente) {
-		setId(id);
-		setSaldo(saldo);
-		setAgencia("001");
-		setConta(conta);
-		setTipoConta(tipoConta);
-		setCliente(cliente);
-	}
-
+	
 	public Integer getId() {
 		return id;
 	}

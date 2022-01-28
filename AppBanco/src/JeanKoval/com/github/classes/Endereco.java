@@ -1,9 +1,5 @@
 package JeanKoval.com.github.classes;
 
-import java.io.FileNotFoundException;
-
-import JeanKoval.com.github.arquivos.Enderecos;
-
 public class Endereco {
 
 	private Integer id;
